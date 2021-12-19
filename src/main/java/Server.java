@@ -9,12 +9,14 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * rmi远程服务器需开启1099、10990端口
  */
 public class Server {
-    public static void main(String[] args) throws IOException, NamingException, AlreadyBoundException {
+    private static CountDownLatch count = new CountDownLatch(1);
+    public static void main(String[] args) throws IOException, NamingException, AlreadyBoundException, InterruptedException {
         System.setProperty("java.rmi.server.hostname", "ip");
 
         //注册端口
@@ -40,5 +42,6 @@ public class Server {
 
         //rmi的访问地址
         registry.bind("ping", referenceWrapper);
+        count.await();
     }
 }
